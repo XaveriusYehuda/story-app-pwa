@@ -25,20 +25,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('hashchange', async () => {
     await app.renderPage();
   });
-
-  // Pendaftaran Service Worker secara manual
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      const swPath = '/sw.js';
-
-      navigator.serviceWorker.register(swPath)
-        .then((registration) => {
-          console.log('Service Worker registered: ', registration);
-        })
-        .catch((error) => {
-          console.log('Service Worker registration failed: ', error);
-        });
-    });
-  }
   
 });
