@@ -1,0 +1,1 @@
+MAP_SERVICE_API_KEY=https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
