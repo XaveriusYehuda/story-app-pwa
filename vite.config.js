@@ -6,6 +6,7 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   root: '.',
+  base: 'https://xaveriusyehuda.github.io/story-app-pwa/',
   publicDir: resolve(__dirname, 'src', 'public'),
   build: {
     outDir: resolve(__dirname, 'dist'),
