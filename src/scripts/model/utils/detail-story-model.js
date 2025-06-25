@@ -35,12 +35,12 @@ class DetailStoryModel {
 
       // Jika berhasil dari jaringan, simpan ke IndexedDB
       // await StoryDatabase.putStoryDetail(data.story);
-      // return {
-      //   success: true,
-      //   data: data.story,
-      //   error: null,
-      //   source: 'network', // Indikator bahwa data dari jaringan
-      // };
+      return {
+        success: true,
+        data: data.story,
+        error: null,
+        source: 'network', // Indikator bahwa data dari jaringan
+      };
     } catch (error) {
       console.error('Error fetching story detail:', error);
 
