@@ -19,7 +19,7 @@ class LoginPagePresenter {
     // Access localStorage directly as it's a browser API, not a model responsibility
     const token = localStorage.getItem('authToken');
     if (token) {
-      window.location.hash = '/';
+      window.location.hash = '#/';
     }
   }
 
@@ -42,7 +42,7 @@ class LoginPagePresenter {
 
         await this.#sleepFunction(5000); // Use injected sleep function
         this.#view.displayMessage('Login successful! Redirecting to home page...', 'success');
-        window.location.hash = '/';
+        window.location.hash = '#/';
       } else {
         this.#view.displayMessage(result.error || 'Login failed. Please try again.', 'error');
       }

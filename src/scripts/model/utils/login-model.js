@@ -1,7 +1,6 @@
 // src/model/login-model.js
 import API_ENDPOINTS from './api-endpoints.js';
 import StoryDatabase from './story-database.js'; // Import StoryDatabase
-import DetailStoryDatabase from './detail-story-database.js'; // Import DetailStoryDatabase
 import { deleteDB } from 'idb'; // Import deleteDB dari idb untuk menghapus seluruh database
 
 class AuthModel {
@@ -38,14 +37,9 @@ class AuthModel {
   async _clearAllIndexedDBData() {
     console.log('Membersihkan semua data di IndexedDB...');
     try {
-      // Cara 1: Menghapus setiap object store secara individual (lebih aman jika ingin selektif)
+      //Menghapus setiap object store secara individual (lebih aman jika ingin selektif)
       await StoryDatabase.clearStories();
-      await DetailStoryDatabase.clearDetailStories();
       console.log('Semua data IndexedDB (stories dan detail-stories) berhasil dikosongkan.');
-
-      // Cara 2: Menghapus seluruh database (lebih agresif, tapi efektif jika hanya ada satu database untuk aplikasi)
-      // await deleteDB('story-app-db'); // Nama database yang Anda gunakan di StoryDatabase dan DetailStoryDatabase
-      // console.log('Seluruh IndexedDB database "story-app-db" berhasil dihapus.');
 
     } catch (error) {
       console.error('Gagal membersihkan data IndexedDB:', error);
