@@ -50,30 +50,30 @@ export default defineConfig({
         display: 'fullscreen',
         icons: [
           {
-            src: '/images/logo-dicoding-story-app-48x48.jpg',
+            src: 'images/logo-dicoding-story-app-48x48.jpg',
             sizes: '48x48',
             type: 'image/jpeg'
           },
           {
-            src: '/images/logo-dicoding-story-app-144x144.jpg',
+            src: 'images/logo-dicoding-story-app-144x144.jpg',
             sizes: '144x144',
             type: 'image/jpeg'
           },
           {
-            src: '/images/logo-dicoding-story-app-196x196.jpg',
+            src: 'images/logo-dicoding-story-app-196x196.jpg',
             sizes: '196x196',
             type: 'image/jpeg'
           }
         ],
         screenshots: [
           {
-            src: '/images/dekstop.png', 
+            src: 'images/dekstop.png', 
             sizes: '958x576', 
             type: 'image/png',
             form_factor: 'wide'
           },
           {
-            src: '/images/mobile.png', 
+            src: 'images/mobile.png', 
             sizes: '377x775', 
             type: 'image/png',
             form_factor: 'narrow'
