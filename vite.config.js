@@ -43,6 +43,7 @@ export default defineConfig({
         ]
       },
       manifest: {
+        id: '/story-app-pwa/',
         name: 'Dicoding Story App',
         short_name: 'CodeStory',
         scope: 'https://xaveriusyehuda.github.io/story-app-pwa/',
@@ -51,19 +52,22 @@ export default defineConfig({
         display: 'fullscreen',
         icons: [
           {
-            src: 'images/logo-dicoding-story-app-48x48.jpg',
+            src: 'images/logo-dicoding-story-app-48x48.png',
             sizes: '48x48',
-            type: 'image/jpeg'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
-            src: 'images/logo-dicoding-story-app-144x144.jpg',
+            src: 'images/logo-dicoding-story-app-144x144.png',
             sizes: '144x144',
-            type: 'image/jpeg'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
-            src: 'images/logo-dicoding-story-app-196x196.jpg',
+            src: 'images/logo-dicoding-story-app-196x196.png',
             sizes: '196x196',
-            type: 'image/jpeg'
+            type: 'image/png',
+            purpose: 'any'
           }
         ],
         screenshots: [
