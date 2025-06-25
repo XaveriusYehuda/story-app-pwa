@@ -45,7 +45,8 @@ export default defineConfig({
       manifest: {
         name: 'Dicoding Story App',
         short_name: 'CodeStory',
-        start_url: '/',
+        scope: 'https://xaveriusyehuda.github.io/story-app-pwa/',
+        start_url: '.',
         theme_color: '#4CAF50',
         display: 'fullscreen',
         icons: [
