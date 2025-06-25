@@ -16,6 +16,11 @@ const StoryDatabase = {
     });
   },
 
+  async getStoryDetail(storyId) {
+    const db = await this.open();
+    return db.get(OBJECT_STORE_NAME, storyId);
+  },
+
   async getAllStories() {
     const db = await this.open();
     return db.getAll(OBJECT_STORE_NAME);

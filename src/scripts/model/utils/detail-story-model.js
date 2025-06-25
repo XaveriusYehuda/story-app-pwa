@@ -1,5 +1,5 @@
 // src/model/detail-story-model.js
-import DetailStoryDatabase from './detail-story-database.js'; // Import DetailStoryDatabase
+import DetailStoryDatabase from './story-database.js'; // Import DetailStoryDatabase
 
 class DetailStoryModel {
   constructor(baseUrl = 'https://story-api.dicoding.dev/v1') {
@@ -21,7 +21,7 @@ class DetailStoryModel {
       if (!response.ok) {
         // Jika respons bukan ok, coba ambil dari IndexedDB
         console.warn('Network fetch for story detail failed, attempting to get from IndexedDB.');
-        const cachedStory = await DetailStoryDatabase.getStoryDetail(storyId);
+        const cachedStory = await StoryDatabase.getStoryDetail(storyId);
         if (cachedStory) {
           return {
             success: true,
@@ -34,20 +34,20 @@ class DetailStoryModel {
       }
 
       // Jika berhasil dari jaringan, simpan ke IndexedDB
-      await DetailStoryDatabase.putStoryDetail(data.story);
-      return {
-        success: true,
-        data: data.story,
-        error: null,
-        source: 'network', // Indikator bahwa data dari jaringan
-      };
+      // await StoryDatabase.putStoryDetail(data.story);
+      // return {
+      //   success: true,
+      //   data: data.story,
+      //   error: null,
+      //   source: 'network', // Indikator bahwa data dari jaringan
+      // };
     } catch (error) {
       console.error('Error fetching story detail:', error);
 
       // Jika ada error (termasuk offline), coba ambil dari IndexedDB
       console.warn('Network request for story detail failed, trying to retrieve from IndexedDB.');
       try {
-        const cachedStory = await DetailStoryDatabase.getStoryDetail(storyId);
+        const cachedStory = await StoryDatabase.getStoryDetail(storyId);
         if (cachedStory) {
           return {
             success: true,

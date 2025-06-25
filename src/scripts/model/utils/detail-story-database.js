@@ -3,7 +3,7 @@ import { openDB } from 'idb';
 
 const DATABASE_NAME = 'story-app-db';
 const DATABASE_VERSION = 1; // Pastikan versi database sama atau lebih tinggi jika sudah ada
-const OBJECT_STORE_NAME = 'detail-stories'; // Nama object store baru untuk detail cerita
+const OBJECT_STORE_NAME = 'stories'; // Nama object store baru untuk detail cerita
 
 const DetailStoryDatabase = {
   async open() {
@@ -20,10 +20,7 @@ const DetailStoryDatabase = {
     });
   },
 
-  async getStoryDetail(storyId) {
-    const db = await this.open();
-    return db.get(OBJECT_STORE_NAME, storyId);
-  },
+  
 
   async putStoryDetail(story) {
     const db = await this.open();
