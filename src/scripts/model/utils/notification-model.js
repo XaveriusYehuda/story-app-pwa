@@ -1,6 +1,6 @@
 // src/models/NotificationModel.js
 
-const VAPID_PUBLIC_KEY = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlfPoJJqxbk';
+const VAPID_PUBLIC_KEY = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -53,18 +53,22 @@ class NotificationModel {
 
   async _sendSubscriptionToBackend(subscription) {
     const token = this._getToken();
-    if (!token) return;
+    if (!token) {
+      console.error('No auth token found');
+      return;
+    }
 
-    const subscribeUrl = 'https://story-api.dicoding.dev/v1/notifications/subscribe';
-
+    console.log('Preparing subscription data for backend...');
     const body = {
       endpoint: subscription.endpoint,
       keys: {
-        p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh')))),
-        auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))),
+        p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')))),
+        auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')))),
       },
     };
 
+    console.log('Sending subscription to backend:', body);
+    
     try {
       const response = await fetch(subscribeUrl, {
         method: 'POST',
@@ -77,12 +81,13 @@ class NotificationModel {
 
       const data = await response.json();
       if (!response.ok) {
+        console.error('Backend subscription error:', data);
         throw new Error(data.message || 'Failed to send subscription to backend');
       }
-      console.log('Subscription sent to backend successfully:', data);
+      console.log('Backend subscription successful:', data);
       return data;
     } catch (error) {
-      console.error('Error sending subscription to backend:', error);
+      console.error('Subscription error:', error);
       throw error;
     }
   }

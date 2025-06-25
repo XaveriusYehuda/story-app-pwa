@@ -7,7 +7,7 @@ import { ExpirationPlugin } from 'workbox-expiration'; // Tambahkan ExpirationPl
 precacheAndRoute(self.__WB_MANIFEST || []);
 
 // VAPID Public Key Anda
-const VAPID_PUBLIC_KEY = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlPPoJJqxbk'; //
+const VAPID_PUBLIC_KEY = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk'; //
 
 // Fungsi untuk urlBase64ToUint8Array (diperlukan untuk konversi VAPID key)
 function urlBase64ToUint8Array(base64String) {
@@ -28,19 +28,34 @@ console.log('Precached files:', self.__WB_MANIFEST);
 
 // Event listener untuk push notification
 self.addEventListener('push', (event) => {
+  console.log('Push event received:', event);
+  
   const showNotification = async () => {
-    const data = event.data.json(); //
-    const title = data.title || 'Notification'; //
-    const options = {
-      body: data.options.body || 'You have a new notification.', //
-      icon: data.options.icon || '/images/logo-dicoding-story-app-196x196.png', //
-      badge: data.options.badge || '/images/logo-dicoding-story-app-196x196.png', //
-    };
+    try {
+      let data;
+      if (event.data) {
+        data = event.data.json();
+        console.log('Push data:', data);
+      } else {
+        console.log('No data in push event, using default');
+        data = {
+          title: 'New Story',
+          options: {
+            body: 'A new story has been created',
+            icon: '/images/logo-dicoding-story-app-196x196.png',
+            badge: '/images/logo-dicoding-story-app-196x196.png'
+          }
+        };
+      }
 
-    await self.registration.showNotification(title, options); //
+      await self.registration.showNotification(data.title, data.options);
+      console.log('Notification shown successfully');
+    } catch (error) {
+      console.error('Error showing notification:', error);
+    }
   };
 
-  event.waitUntil(showNotification()); //
+  event.waitUntil(showNotification());
 });
 
 self.addEventListener('notificationclick', (event) => {

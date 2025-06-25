@@ -13,38 +13,36 @@ class NotificationPresenter {
   async initializeNotifications() {
     if ('Notification' in window) {
       try {
+        console.log('Requesting notification permission...');
         const permission = await this.#view.showNotificationPermissionPrompt();
+        
         if (permission === 'granted') {
-          // Langkah 1: Periksa dan hapus langganan yang ada jika applicationServerKey berbeda
+          console.log('Permission granted, checking existing subscription...');
           const registration = await navigator.serviceWorker.ready;
           const currentSubscription = await registration.pushManager.getSubscription();
 
           if (currentSubscription) {
-            // Periksa apakah applicationServerKey saat ini cocok dengan yang diinginkan
-            // Ini bisa agak tricky karena kita tidak bisa langsung membandingkan kunci
-            // Jadi, pendekatan paling aman adalah selalu mencoba unsubscribe jika ada subscription.
-            console.log('Existing push subscription found. Attempting to clear it for re-subscription.');
+            console.log('Existing subscription found:', currentSubscription);
             try {
-              await this.#notificationModel.unsubscribeUserFromPush(); // Panggil unsubscribe dari model
-              console.log('Previous subscription successfully unsubscribed.');
+              await this.#notificationModel.unsubscribeUserFromPush();
+              console.log('Successfully unsubscribed from previous subscription');
             } catch (unsubscribeError) {
-              console.warn('Failed to unsubscribe previous subscription, it might not exist on backend or other issue:', unsubscribeError);
-              // Lanjutkan saja, mungkin masalahnya hanya di frontend
+              console.warn('Unsubscription error:', unsubscribeError);
             }
           }
 
-          // Langkah 2: Buat langganan baru
-          await this.#notificationModel.subscribeUserToPush();
-          console.log('Successfully subscribed for push notifications.');
-
+          console.log('Attempting to subscribe...');
+          const newSubscription = await this.#notificationModel.subscribeUserToPush();
+          console.log('New subscription created:', newSubscription);
         } else {
+          console.log('Permission denied:', permission);
           this.#view.showNotificationPermissionDeniedWarning();
         }
       } catch (error) {
-        console.error('Error during notification initialization:', error);
-        // Anda mungkin ingin menampilkan pesan error ke pengguna melalui view di sini
+        console.error('Notification initialization error:', error);
       }
     } else {
+      console.log('Notifications not supported');
       this.#view.showNotificationSupportWarning();
     }
   }
