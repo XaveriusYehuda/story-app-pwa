@@ -1,5 +1,5 @@
 // src/model/detail-story-model.js
-import DetailStoryDatabase from './story-database.js'; // Import DetailStoryDatabase
+import StoryDatabase from './story-database.js'; // Import DetailStoryDatabase
 
 class DetailStoryModel {
   constructor(baseUrl = 'https://story-api.dicoding.dev/v1') {
