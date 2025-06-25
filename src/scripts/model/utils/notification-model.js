@@ -61,11 +61,17 @@ class NotificationModel {
     const subscribeUrl = 'https://story-api.dicoding.dev/v1/notifications/subscribe';
 
     console.log('Preparing subscription data for backend...');
+    const p256dhKey = subscription.getKey('p256dh');
+    const authKey = subscription.getKey('auth');
+    if (!p256dhKey || !authKey) {
+      console.error('Subscription keys are missing');
+      throw new Error('Subscription keys are missing');
+    }
     const body = {
       endpoint: subscription.endpoint,
       keys: {
-        p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')))),
-        auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')))),
+        p256dh: btoa(String.fromCharCode(...new Uint8Array(p256dhKey))),
+        auth: btoa(String.fromCharCode(...new Uint8Array(authKey))),
       },
     };
 
