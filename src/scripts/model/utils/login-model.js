@@ -127,8 +127,8 @@ class AuthModel {
     localStorage.removeItem('userName');
 
     const authModelInstance = new AuthModel();
-    await authModelInstance._clearServiceWorkerCaches();
     await authModelInstance._clearAllIndexedDBData(); // Panggil fungsi baru untuk membersihkan IndexedDB
+    await authModelInstance._clearServiceWorkerCaches();
   }
 }
 
