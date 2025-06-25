@@ -144,7 +144,7 @@ class AddStoryPagePresenter {
       if (result.success) {
         this.#view.displayMessage('Story submitted successfully!', 'success');
         this.#view.resetForm();
-        window.location.href = '/'; // No need for e.preventDefault() here if already handled
+        window.location.href = '#/'; // No need for e.preventDefault() here if already handled
       } else {
         this.#view.displayMessage(result.error || 'Failed to submit story', 'error');
       }

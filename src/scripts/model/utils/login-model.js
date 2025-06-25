@@ -1,5 +1,8 @@
+// src/model/login-model.js
 import API_ENDPOINTS from './api-endpoints.js';
-// import { deleteDB, openDB } from 'idb'; // Tidak diperlukan lagi untuk menghapus cache SW
+import StoryDatabase from './story-database.js'; // Import StoryDatabase
+import DetailStoryDatabase from './detail-story-database.js'; // Import DetailStoryDatabase
+import { deleteDB } from 'idb'; // Import deleteDB dari idb untuk menghapus seluruh database
 
 class AuthModel {
   constructor(baseUrl = API_ENDPOINTS.LOGIN) {
@@ -31,6 +34,25 @@ class AuthModel {
     }
   }
 
+  // Fungsi baru untuk menghapus semua data di IndexedDB
+  async _clearAllIndexedDBData() {
+    console.log('Membersihkan semua data di IndexedDB...');
+    try {
+      // Cara 1: Menghapus setiap object store secara individual (lebih aman jika ingin selektif)
+      await StoryDatabase.clearStories();
+      await DetailStoryDatabase.clearDetailStories();
+      console.log('Semua data IndexedDB (stories dan detail-stories) berhasil dikosongkan.');
+
+      // Cara 2: Menghapus seluruh database (lebih agresif, tapi efektif jika hanya ada satu database untuk aplikasi)
+      // await deleteDB('story-app-db'); // Nama database yang Anda gunakan di StoryDatabase dan DetailStoryDatabase
+      // console.log('Seluruh IndexedDB database "story-app-db" berhasil dihapus.');
+
+    } catch (error) {
+      console.error('Gagal membersihkan data IndexedDB:', error);
+      throw error; // Re-throw error agar bisa ditangani di pemanggil
+    }
+  }
+
   /**
    * Authenticate user with email and password
    * @param {string} email - User's email address
@@ -38,7 +60,6 @@ class AuthModel {
    * @returns {Promise<Object>} Response object with success status, data, and error
    */
   async login(email, password) {
-    // ... (kode login tidak berubah)
     try {
       const response = await fetch(this.baseUrl, {
         method: 'POST',
@@ -104,7 +125,7 @@ class AuthModel {
   }
 
   /**
-   * Clear authentication data and IndexedDB table
+   * Clear authentication data and all application data (SW caches, IndexedDB)
    */
   static async clearAuthData() {
     localStorage.removeItem('authToken');
@@ -112,7 +133,8 @@ class AuthModel {
     localStorage.removeItem('userName');
 
     const authModelInstance = new AuthModel();
-    await authModelInstance._clearServiceWorkerCaches(); 
+    await authModelInstance._clearServiceWorkerCaches();
+    await authModelInstance._clearAllIndexedDBData(); // Panggil fungsi baru untuk membersihkan IndexedDB
   }
 }
 

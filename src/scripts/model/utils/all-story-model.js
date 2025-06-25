@@ -1,4 +1,6 @@
+// src/model/all-story-model.js
 import API_ENDPOINTS from './api-endpoints.js';
+import StoryDatabase from './story-database.js'; // Import StoryDatabase
 
 class StoryModel {
   constructor(baseUrl = API_ENDPOINTS.GET_ALL_STORIES || 'https://story-api.dicoding.dev/v1/stories') {
@@ -6,8 +8,8 @@ class StoryModel {
   }
 
   /**
-   * Get all stories with pagination and location filter by directly fetching from the API.
-   * Service Worker will handle caching of this request.
+   * Get all stories with pagination and location filter.
+   * Tries to fetch from network first, then falls back to IndexedDB if offline.
    * @param {string} token - Authentication token
    * @param {number} [page=1] - Page number
    * @param {number} [size=10] - Items per page
@@ -16,6 +18,7 @@ class StoryModel {
    */
   async getAllStories(token, page = 1, size = 10, location = 0) {
     try {
+      // Coba ambil dari jaringan terlebih dahulu
       const response = await fetch(
         `${this.baseUrl}?page=${page}&size=${size}&location=${location}`,
         {
@@ -29,28 +32,60 @@ class StoryModel {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch stories');
+        // Jika respons bukan ok (misalnya, 4xx, 5xx), coba ambil dari IndexedDB
+        // Ini bisa terjadi bahkan jika online, tapi API mengembalikan error
+        console.warn('Network fetch failed, attempting to get from IndexedDB.');
+        const cachedStories = await StoryDatabase.getAllStories();
+        if (cachedStories && cachedStories.length > 0) {
+          return {
+            success: true,
+            data: cachedStories,
+            error: null,
+            source: 'indexeddb_fallback', // Indikator bahwa data dari IndexedDB
+          };
+        }
+        throw new Error(data.message || 'Failed to fetch stories from network or cache.');
       }
 
-      // Model hanya mengembalikan data yang berhasil diambil dari 'fetch'
-      // Service Worker akan secara otomatis mencegat permintaan ini dan mengelola cache-nya.
+      // Jika berhasil dari jaringan, simpan ke IndexedDB untuk penggunaan offline berikutnya
+      await StoryDatabase.putStories(data.listStory);
       return {
         success: true,
         data: data.listStory,
         error: null,
-        source: 'network_or_sw_cache' // Indikator abstrak, karena model tidak peduli dari mana asalnya
+        source: 'network', // Indikator bahwa data dari jaringan
       };
     } catch (error) {
       console.error('Error fetching stories:', error);
-      // Jika fetch gagal (misalnya, karena offline dan service worker tidak dapat melayani cache,
-      // atau ada masalah jaringan lain), model hanya melaporkan kegagalan.
-      // Service worker seharusnya sudah mencoba melayani dari cache jika ada.
-      return {
-        success: false,
-        data: null,
-        error: error.message || 'An error occurred while fetching stories. Check your internet connection.',
-        source: 'fetch_failed'
-      };
+
+      // Jika ada error (termasuk offline), coba ambil dari IndexedDB
+      console.warn('Network request failed, trying to retrieve from IndexedDB.');
+      try {
+        const cachedStories = await StoryDatabase.getAllStories();
+        if (cachedStories && cachedStories.length > 0) {
+          return {
+            success: true,
+            data: cachedStories,
+            error: null,
+            source: 'indexeddb', // Indikator bahwa data dari IndexedDB
+          };
+        } else {
+          return {
+            success: false,
+            data: null,
+            error: error.message || 'An error occurred and no cached data available.',
+            source: 'no_data_available',
+          };
+        }
+      } catch (dbError) {
+        console.error('Error retrieving from IndexedDB:', dbError);
+        return {
+          success: false,
+          data: null,
+          error: `Network error and IndexedDB retrieval failed: ${error.message || dbError.message}`,
+          source: 'fetch_and_indexeddb_failed',
+        };
+      }
     }
   }
 }
