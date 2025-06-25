@@ -25,11 +25,10 @@ function urlBase64ToUint8Array(base64String) {
 
 console.log('Precached files:', self.__WB_MANIFEST);
 
-
 // Event listener untuk push notification
 self.addEventListener('push', (event) => {
   console.log('Push event received:', event);
-  
+
   const showNotification = async () => {
     try {
       let data;

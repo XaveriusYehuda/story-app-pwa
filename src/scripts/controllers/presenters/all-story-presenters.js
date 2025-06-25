@@ -21,7 +21,7 @@ class AllStoryPresenter {
   _handleLogout(e) {
     e.preventDefault();
     this.#authModel.clearAuthData(); // Use injected authModel
-    window.location.hash = '#/login';
+    window.location.hash = '/login';
   }
 
   async _loadStories() {

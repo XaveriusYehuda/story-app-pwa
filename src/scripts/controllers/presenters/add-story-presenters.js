@@ -23,7 +23,7 @@ class AddStoryPagePresenter {
     if (!this.#token) {
       this.#view.displayMessage('You need to login first to share a story', 'error');
       this.#view.hideForm();
-      setTimeout(() => window.location.href = '#/login', 2000);
+      setTimeout(() => window.location.href = '/login', 2000);
       return;
     }
 

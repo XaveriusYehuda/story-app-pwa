@@ -34,7 +34,7 @@ class DetailStoryPagePresenter {
 
     if (!token) {
       this.#view.showError('Please login first');
-      setTimeout(() => window.location.href = '#/login', 2000); // Redirect to login
+      setTimeout(() => window.location.href = '/login', 2000); // Redirect to login
       return;
     }
 
