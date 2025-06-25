@@ -58,6 +58,8 @@ class NotificationModel {
       return;
     }
 
+    const subscribeUrl = 'https://story-api.dicoding.dev/v1/notifications/subscribe';
+
     console.log('Preparing subscription data for backend...');
     const body = {
       endpoint: subscription.endpoint,
