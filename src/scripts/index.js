@@ -9,15 +9,6 @@ import NotificationPresenter from './controllers/presenters/notification-present
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-  if ('serviceWorker' in navigator) {
-    try {
-      const registration = await navigator.serviceWorker.register('/service-worker.js');
-      console.log('ServiceWorker registration successful:', registration);
-    } catch (error) {
-      console.error('ServiceWorker registration failed:', error);
-    }
-  }
-
   const app = new App({
     content: document.querySelector('#main-content'),
   });
